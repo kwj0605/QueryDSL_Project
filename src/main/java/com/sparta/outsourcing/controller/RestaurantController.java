@@ -61,4 +61,13 @@ public class RestaurantController {
             @RequestParam(name = "size", defaultValue = "5") int size) {
         return restaurantService.getAllRestaurants(page, size);
     }
+
+
+   /* @GetMapping("/liked")
+    public ResponseEntity<List<RestaurantDto>> getLikedRestaurants(
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "5") int size,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return restaurantService.getLikedRestaurants(page, size, userDetails);
+    }*/
 }

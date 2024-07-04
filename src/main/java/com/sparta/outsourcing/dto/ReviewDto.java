@@ -10,16 +10,19 @@ public class ReviewDto {
 
     private Long orderId;
     private String content;
+    private Long likes;
 
-    public ReviewDto(Long orderId, String content) {
+    public ReviewDto(Long orderId, String content, Long likes) {
         this.orderId = orderId;
         this.content = content;
+        this.likes = likes;
     }
 
     public static ReviewDto toDto(Review review) {
         return new ReviewDto(
                 review.getOrder().getOrderId(),
-                review.getContent()
+                review.getContent(),
+                review.getLikes()
         );
     }
 }

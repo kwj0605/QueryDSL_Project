@@ -5,6 +5,7 @@ import com.sparta.outsourcing.entity.Restaurant;
 import com.sparta.outsourcing.entity.User;
 import com.sparta.outsourcing.enums.UserRoleEnum;
 import com.sparta.outsourcing.exception.InvalidAccessException;
+import com.sparta.outsourcing.repository.RestaurantLikeRepository;
 import com.sparta.outsourcing.repository.RestaurantRepository;
 import com.sparta.outsourcing.security.UserDetailsImpl;
 import jakarta.transaction.Transactional;
@@ -99,4 +100,19 @@ public class RestaurantService {
         User currentUser = userDetails.getUser();
         return currentUser;
     }
+
+   /* // 유저가 좋아요한 게시글 불러오기
+    // 이거 여기다하지말고 RestaurantLikeRepository쪽으로 옮겨주기
+    //controller랑 서비스도 like쪽으로
+    public ResponseEntity<List<RestaurantDto>> getLikedRestaurants(int page, int size, UserDetailsImpl userDetails) {
+        Pageable pageable = PageRequest.of(page, size);
+        // 로직추가(좋아요가 true인 restaurant)
+        Page<Restaurant> likedRestaurantPage = restaurantLikeRepository.findByRestaurantsByUserAndLikedIsTrue(userDetails.getUser());
+        List<RestaurantDto> likedRestaurantDtoList = likedRestaurantPage.getContent().stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(likedRestaurantDtoList);
+    }*/
+
 }

@@ -1,17 +1,19 @@
 package com.sparta.outsourcing.controller;
 
 import com.sparta.outsourcing.dto.LikeResponseDto;
+import com.sparta.outsourcing.dto.RestaurantDto;
+import com.sparta.outsourcing.dto.ReviewDto;
 import com.sparta.outsourcing.enums.ContentTypeEnum;
 import com.sparta.outsourcing.exception.LikeSelfException;
 import com.sparta.outsourcing.security.UserDetailsImpl;
 import com.sparta.outsourcing.service.LikeService;
+import com.sparta.outsourcing.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/like")
@@ -19,9 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class LikeController {
 
     private final LikeService likeService;
+    private final RestaurantService restaurantService;
 
     /**
-    *  게시물에 대한 좋아요 추가 및 취소 컨트롤러
+    *  게시물또는 리뷰에 대한 좋아요 추가 및 취소 컨트롤러
      * @param contentType : {RESTAURANT | REVIEW}
      * @param contentId : RESTAURANT 혹은 REVIEW의 Id
      *
@@ -43,5 +46,21 @@ public class LikeController {
         } else {
             return ResponseEntity.ok("좋아요를 취소했습니다. 다시 좋아요를 누를 수 있습니다 : " + likeResponseDto.getCnt());
         }
+    }
+
+    @GetMapping("/restaurants")
+    public ResponseEntity<List<RestaurantDto>> getLikedRestaurants(
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "5") int size,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return likeService.getLikedRestaurants(page, size, userDetails);
+    }
+
+    @GetMapping("/reviews")
+    public ResponseEntity<List<ReviewDto>> getLikedReviews(
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "5") int size,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return likeService.getLikedReviews(page, size, userDetails);
     }
 }
