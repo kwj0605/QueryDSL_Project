@@ -4,11 +4,15 @@ package com.sparta.outsourcing.service;
 import com.sparta.outsourcing.dto.ProfileDto;
 import com.sparta.outsourcing.dto.ProfileResponseDto;
 import com.sparta.outsourcing.dto.UserDto;
+import com.sparta.outsourcing.entity.Restaurant;
+import com.sparta.outsourcing.entity.Review;
 import com.sparta.outsourcing.entity.User;
 import com.sparta.outsourcing.enums.UserRoleEnum;
 import com.sparta.outsourcing.enums.UserStatusEnum;
 import com.sparta.outsourcing.exception.AlreadySignupException;
 import com.sparta.outsourcing.exception.UserNotFoundException;
+import com.sparta.outsourcing.repository.RestaurantRepository;
+import com.sparta.outsourcing.repository.ReviewRepository;
 import com.sparta.outsourcing.repository.UserRepository;
 import com.sparta.outsourcing.security.UserDetailsImpl;
 import jakarta.servlet.http.Cookie;
@@ -34,6 +38,8 @@ public class UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserRepository userRepository;
     private final MessageSource messageSource;
+    private final RestaurantRepository restaurantRepository;
+    private final ReviewRepository reviewRepository;
 
 
     public ResponseEntity<String> signUp(UserDto userDto, Long roleId) throws AlreadySignupException {
@@ -60,8 +66,12 @@ public class UserService {
     @Transactional(readOnly = true)
     public ResponseEntity<ProfileResponseDto> getProfile(Long userId) {
         Optional<User> user = userRepository.findById(userId);
+        Optional<Restaurant> restaurant = restaurantRepository.findById(userId);
+        Optional<Review> review = reviewRepository.findById(userId);
         if (user.isPresent()) {
-            ProfileResponseDto profileResponseDto = new ProfileResponseDto(user.get().getNickname(), user.get().getUserinfo());
+            ProfileResponseDto profileResponseDto = new ProfileResponseDto(
+                    user.get().getNickname(), user.get().getUserinfo(),
+                    restaurant.get().getLikes(), review.get().getLikes());
             return ResponseEntity.status(HttpStatus.OK).body(profileResponseDto);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
